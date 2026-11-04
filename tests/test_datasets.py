@@ -1,4 +1,5 @@
 import hashlib
+import io
 import os
 import tempfile
 import unittest
@@ -14,6 +15,34 @@ BUCKET = "test-bucket"
 NAME = "DS_Base.csv"
 CONTENT = b"Full_request,class\nGET / HTTP/1.1,Normal\n"
 CONTENT_HASH = hashlib.sha256(CONTENT).hexdigest()
+
+
+class ProgressBarTests(unittest.TestCase):
+    def test_draws_progress_and_ends_the_line(self) -> None:
+        stream = io.StringIO()
+        bar = datasets._ProgressBar("file.csv", 200 * 10**6, stream)
+        bar(100 * 10**6)
+        bar(100 * 10**6)
+        bar.finish()
+        output = stream.getvalue()
+        self.assertIn(" 50% 100/200 MB", output)
+        self.assertIn("100% 200/200 MB", output)
+        self.assertIn("#" * datasets.BAR_WIDTH, output)
+        self.assertTrue(output.endswith("\n"))
+
+    def test_progress_stays_in_range_and_skips_repeats(self) -> None:
+        stream = io.StringIO()
+        bar = datasets._ProgressBar("file.csv", 100, stream)
+        bar(-50)
+        bar(500)
+        bar(1)
+        self.assertEqual(bar.done, 100)
+        self.assertEqual(stream.getvalue().count("\r"), 2)  # 0% and 100% only.
+
+    def test_finish_without_progress_writes_nothing(self) -> None:
+        stream = io.StringIO()
+        datasets._ProgressBar("file.csv", 100, stream).finish()
+        self.assertEqual(stream.getvalue(), "")
 
 
 class FetchWithoutNetworkTests(unittest.TestCase):

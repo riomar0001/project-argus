@@ -17,6 +17,8 @@ import re
 import shutil
 import sys
 import tempfile
+import threading
+import time
 from pathlib import Path
 
 import boto3
@@ -38,10 +40,52 @@ HASH_CHUNK_BYTES = 2**20
 PART_BYTES = 64 * 2**20
 MAX_CONCURRENCY = 4
 ACCOUNT_ID_PATTERN = re.compile(r"[0-9a-f]{32}")
+BAR_WIDTH = 30
+BYTES_PER_MB = 10**6
 
 
 class DatasetError(Exception):
     """A dataset could not be fetched or failed verification."""
+
+
+class _ProgressBar:
+    """Draw download progress on one terminal line; boto3 calls this from several threads."""
+
+    def __init__(self, name: str, total: int, stream=sys.stderr) -> None:
+        self.name, self.total, self.stream = name, total, stream
+        self.done = 0
+        self.last_percent = -1
+        self.started = time.monotonic()
+        self.lock = threading.Lock()
+
+    def __call__(self, count: int) -> None:
+        with self.lock:
+            # Retries can report negative progress, so keep the total in range.
+            self.done = min(max(self.done + count, 0), self.total)
+            percent = self.done * 100 // max(self.total, 1)
+            if percent == self.last_percent:
+                return
+            self.last_percent = percent
+            self.stream.write(f"\r{self._render(percent)}")
+            self.stream.flush()
+
+    def _render(self, percent: int) -> str:
+        filled = BAR_WIDTH * percent // 100
+        bar = "#" * filled + "-" * (BAR_WIDTH - filled)
+        speed = self.done / max(time.monotonic() - self.started, 1e-6)
+        seconds_left = int((self.total - self.done) / speed) if speed > 0 else 0
+        line = (
+            f"{self.name} [{bar}] {percent:3d}% "
+            f"{self.done / BYTES_PER_MB:.0f}/{self.total / BYTES_PER_MB:.0f} MB "
+            f"{speed / BYTES_PER_MB:.1f} MB/s, {seconds_left // 60}m {seconds_left % 60:02d}s left"
+        )
+        return line.ljust(100)  # Clears leftovers from a longer previous line.
+
+    def finish(self) -> None:
+        with self.lock:
+            if self.last_percent >= 0:
+                self.stream.write("\n")
+                self.stream.flush()
 
 
 def _load_env_file(path: Path) -> None:
@@ -111,10 +155,14 @@ def _download(client, bucket: str, name: str, target: Path) -> None:
     descriptor, temporary_name = tempfile.mkstemp(dir=target.parent, prefix=f".{name}.", suffix=".part")
     os.close(descriptor)
     temporary = Path(temporary_name)
+    progress = _ProgressBar(name, size)
     try:
         transfer = TransferConfig(multipart_threshold=PART_BYTES, multipart_chunksize=PART_BYTES, max_concurrency=MAX_CONCURRENCY)
-        logger.info("Downloading %s (%d bytes)", name, size)
-        client.download_file(bucket, name, str(temporary), Config=transfer)
+        try:
+            client.download_file(bucket, name, str(temporary), Config=transfer, Callback=progress)
+        finally:
+            progress.finish()
+        logger.info("Verifying %s", name)
         if temporary.stat().st_size != size:
             raise DatasetError(f"{name}: downloaded {temporary.stat().st_size} bytes, expected {size}")
         if _sha256_file(temporary) != expected_hash:
