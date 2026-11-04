@@ -6,6 +6,7 @@ readme = "README.md"
 authors = [{ name = "riomar0001", email = "mariojringuito@riomar.dev" }]
 requires-python = ">=3.14"
 dependencies = [
+    "boto3>=1.43.123",
     "matplotlib>=3.11.2",
     "numpy>=2.5.4",
     "pandas>=3.1.0",
@@ -23,7 +24,10 @@ requires = ["uv_build>=0.12.1,<0.13.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
-dev = ["ipykernel>=7.4.0"]
+dev = [
+    "ipykernel>=7.4.0",
+    "moto>=5.2.5",
+]
 
 [[tool.uv.index]]
 name = "pytorch-cu132"
