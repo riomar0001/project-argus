@@ -13,3 +13,5 @@ datasets/
 
 # Local secrets
 .env
+# Notebook run log
+results/progress.log
