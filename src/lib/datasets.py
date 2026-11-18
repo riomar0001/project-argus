@@ -1,14 +1,22 @@
 """Fetch the thesis datasets from Cloudflare R2 into datasets/ when they are missing.
 
-    from project_argus.datasets import fetch_dataset
+    from lib.datasets import fetch_dataset
     path = fetch_dataset("DS_Augmented_v2.csv")
 
 To download everything that's missing:
 
-    uv run python -m project_argus.datasets
+    uv run project-argus            # or: uv run python -m lib.datasets
 
 Files already in datasets/ are returned with no network call and no credentials.
 Settings come from environment variables or a .env file; see .env.example.
+
+How a download stays safe:
+  1. HEAD the object to learn its size and the sha256 stored in its metadata.
+  2. Refuse early if the object has no hash or the disk lacks room.
+  3. Download into a hidden .part file next to the target.
+  4. Check the size and sha256, then atomically rename the .part file onto the
+     target. Any failure deletes the .part file, so a half-written or corrupt
+     dataset never appears under its real name.
 """
 
 import hashlib
@@ -30,9 +38,10 @@ from botocore.exceptions import BotoCoreError, ClientError
 
 logger = logging.getLogger(__name__)
 
-ROOT = Path(__file__).resolve().parents[2]
-DATASETS_DIR = ROOT / "datasets"
+ROOT = Path(__file__).resolve().parents[2]  # Repo root: src/lib/datasets.py -> ../../
+DATASETS_DIR = ROOT / "datasets"  # Git-ignored local cache of the CSVs.
 ENV_FILE = ROOT / ".env"
+# The only object keys we fetch; also an allow-list that blocks path tricks like "../x".
 DATASETS = ("DS_Base.csv", "DS_Augmented_v1.csv", "DS_Augmented_v2.csv")
 REQUIRED_ENV = (
     "R2_ACCOUNT_ID",
@@ -42,12 +51,12 @@ REQUIRED_ENV = (
 )
 
 HASH_METADATA_KEY = "sha256"  # Set on each object when it's uploaded.
-HASH_CHUNK_BYTES = 2**20
-PART_BYTES = 64 * 2**20
-MAX_CONCURRENCY = 4
-ACCOUNT_ID_PATTERN = re.compile(r"[0-9a-f]{32}")
-BAR_WIDTH = 30
-BYTES_PER_MB = 10**6
+HASH_CHUNK_BYTES = 2**20  # Read 1 MiB at a time when hashing, so memory stays flat.
+PART_BYTES = 64 * 2**20  # Multipart download chunk size and threshold.
+MAX_CONCURRENCY = 4  # Parallel part downloads per file.
+ACCOUNT_ID_PATTERN = re.compile(r"[0-9a-f]{32}")  # Cloudflare account IDs are 32 hex chars.
+BAR_WIDTH = 30  # Characters in the progress bar.
+BYTES_PER_MB = 10**6  # Decimal MB, matching what R2's dashboard shows.
 
 
 class DatasetError(Exception):
@@ -65,6 +74,7 @@ class _ProgressBar:
         self.lock = threading.Lock()
 
     def __call__(self, count: int) -> None:
+        """Add `count` downloaded bytes and redraw, but only when the whole percent changes."""
         with self.lock:
             # Retries can report negative progress, so keep the total in range.
             self.done = min(max(self.done + count, 0), self.total)
@@ -76,6 +86,7 @@ class _ProgressBar:
             self.stream.flush()
 
     def _render(self, percent: int) -> str:
+        """Build the line, e.g. `DS_Base.csv [####---] 12% 37/309 MB 8.1 MB/s, 0m 33s left`."""
         filled = BAR_WIDTH * percent // 100
         bar = "#" * filled + "-" * (BAR_WIDTH - filled)
         speed = self.done / max(time.monotonic() - self.started, 1e-6)
@@ -88,6 +99,7 @@ class _ProgressBar:
         return line.ljust(100)  # Clears leftovers from a longer previous line.
 
     def finish(self) -> None:
+        """End the progress line so later log output starts on a fresh line."""
         with self.lock:
             if self.last_percent >= 0:
                 self.stream.write("\n")
@@ -108,6 +120,7 @@ def _load_env_file(path: Path) -> None:
 
 
 def _settings_from_env() -> dict[str, str]:
+    """Return the R2 settings from .env or the environment; raise if any are missing or malformed."""
     _load_env_file(ENV_FILE)
     settings = {name: os.environ.get(name, "").strip() for name in REQUIRED_ENV}
     missing = [name for name, value in settings.items() if not value]
@@ -121,6 +134,7 @@ def _settings_from_env() -> dict[str, str]:
 
 
 def _make_client(settings: dict[str, str]):
+    """Build an S3 client for R2, with timeouts and bounded retries so a stalled network fails."""
     return boto3.client(
         "s3",
         endpoint_url=f"https://{settings['R2_ACCOUNT_ID'].lower()}.r2.cloudflarestorage.com",
@@ -140,6 +154,7 @@ def _make_client(settings: dict[str, str]):
 
 
 def _sha256_file(path: Path) -> str:
+    """Hash a file in fixed-size chunks so multi-GB datasets don't load into memory."""
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         while chunk := handle.read(HASH_CHUNK_BYTES):
@@ -165,7 +180,7 @@ def _download(client, bucket: str, name: str, target: Path) -> None:
     descriptor, temporary_name = tempfile.mkstemp(
         dir=target.parent, prefix=f".{name}.", suffix=".part"
     )
-    os.close(descriptor)
+    os.close(descriptor)  # boto3 reopens the file by name; we only need the unique path.
     temporary = Path(temporary_name)
     progress = _ProgressBar(name, size)
     try:
@@ -187,9 +202,9 @@ def _download(client, bucket: str, name: str, target: Path) -> None:
             )
         if _sha256_file(temporary) != expected_hash:
             raise DatasetError(f"{name}: downloaded file failed its checksum")
-        os.replace(temporary, target)
+        os.replace(temporary, target)  # Atomic: readers see the old state or the whole file.
     finally:
-        temporary.unlink(missing_ok=True)
+        temporary.unlink(missing_ok=True)  # No-op after a successful replace.
 
 
 def fetch_dataset(name: str, directory: Path = DATASETS_DIR) -> Path:
@@ -200,6 +215,7 @@ def fetch_dataset(name: str, directory: Path = DATASETS_DIR) -> Path:
         )
 
     target = Path(directory) / name
+    # A non-empty local copy is trusted as-is; delete it to force a fresh, verified download.
     if target.is_file() and target.stat().st_size > 0:
         return target
 
@@ -217,6 +233,7 @@ def fetch_all(directory: Path = DATASETS_DIR) -> list[Path]:
 
 
 def main() -> int:
+    """CLI entry point: fetch every missing dataset; exit code 1 on the first failure."""
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     try:
         for path in fetch_all():
