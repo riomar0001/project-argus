@@ -9,7 +9,7 @@ from unittest import mock
 import boto3
 from moto import mock_aws
 
-from project_argus import datasets
+from lib import datasets
 
 BUCKET = "test-bucket"
 NAME = "DS_Base.csv"

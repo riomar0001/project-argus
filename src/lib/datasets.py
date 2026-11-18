@@ -10,6 +10,7 @@ To download everything that's missing:
 Files already in datasets/ are returned with no network call and no credentials.
 Settings come from environment variables or a .env file; see .env.example.
 """
+
 import hashlib
 import logging
 import os
@@ -33,7 +34,12 @@ ROOT = Path(__file__).resolve().parents[2]
 DATASETS_DIR = ROOT / "datasets"
 ENV_FILE = ROOT / ".env"
 DATASETS = ("DS_Base.csv", "DS_Augmented_v1.csv", "DS_Augmented_v2.csv")
-REQUIRED_ENV = ("R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET")
+REQUIRED_ENV = (
+    "R2_ACCOUNT_ID",
+    "R2_ACCESS_KEY_ID",
+    "R2_SECRET_ACCESS_KEY",
+    "R2_BUCKET",
+)
 
 HASH_METADATA_KEY = "sha256"  # Set on each object when it's uploaded.
 HASH_CHUNK_BYTES = 2**20
@@ -106,7 +112,9 @@ def _settings_from_env() -> dict[str, str]:
     settings = {name: os.environ.get(name, "").strip() for name in REQUIRED_ENV}
     missing = [name for name, value in settings.items() if not value]
     if missing:
-        raise DatasetError(f"missing settings: {', '.join(missing)}. Copy .env.example to .env and fill them in.")
+        raise DatasetError(
+            f"missing settings: {', '.join(missing)}. Copy .env.example to .env and fill them in."
+        )
     if not ACCOUNT_ID_PATTERN.fullmatch(settings["R2_ACCOUNT_ID"].lower()):
         raise DatasetError("R2_ACCOUNT_ID must be 32 hexadecimal characters")
     return settings
@@ -145,26 +153,38 @@ def _download(client, bucket: str, name: str, target: Path) -> None:
     size = head["ContentLength"]
     expected_hash = head.get("Metadata", {}).get(HASH_METADATA_KEY)
     if not expected_hash:
-        raise DatasetError(f"{name} has no {HASH_METADATA_KEY} metadata in {bucket}, so it can't be verified")
+        raise DatasetError(
+            f"{name} has no {HASH_METADATA_KEY} metadata in {bucket}, so it can't be verified"
+        )
 
     target.parent.mkdir(parents=True, exist_ok=True)
     free = shutil.disk_usage(target.parent).free
     if free < size:
         raise DatasetError(f"{name} needs {size} bytes but only {free} are free")
 
-    descriptor, temporary_name = tempfile.mkstemp(dir=target.parent, prefix=f".{name}.", suffix=".part")
+    descriptor, temporary_name = tempfile.mkstemp(
+        dir=target.parent, prefix=f".{name}.", suffix=".part"
+    )
     os.close(descriptor)
     temporary = Path(temporary_name)
     progress = _ProgressBar(name, size)
     try:
-        transfer = TransferConfig(multipart_threshold=PART_BYTES, multipart_chunksize=PART_BYTES, max_concurrency=MAX_CONCURRENCY)
+        transfer = TransferConfig(
+            multipart_threshold=PART_BYTES,
+            multipart_chunksize=PART_BYTES,
+            max_concurrency=MAX_CONCURRENCY,
+        )
         try:
-            client.download_file(bucket, name, str(temporary), Config=transfer, Callback=progress)
+            client.download_file(
+                bucket, name, str(temporary), Config=transfer, Callback=progress
+            )
         finally:
             progress.finish()
         logger.info("Verifying %s", name)
         if temporary.stat().st_size != size:
-            raise DatasetError(f"{name}: downloaded {temporary.stat().st_size} bytes, expected {size}")
+            raise DatasetError(
+                f"{name}: downloaded {temporary.stat().st_size} bytes, expected {size}"
+            )
         if _sha256_file(temporary) != expected_hash:
             raise DatasetError(f"{name}: downloaded file failed its checksum")
         os.replace(temporary, target)
@@ -175,7 +195,9 @@ def _download(client, bucket: str, name: str, target: Path) -> None:
 def fetch_dataset(name: str, directory: Path = DATASETS_DIR) -> Path:
     """Return the local path to a dataset, downloading it from R2 only if it's missing."""
     if name not in DATASETS:
-        raise DatasetError(f"unknown dataset {name!r}; expected one of {', '.join(DATASETS)}")
+        raise DatasetError(
+            f"unknown dataset {name!r}; expected one of {', '.join(DATASETS)}"
+        )
 
     target = Path(directory) / name
     if target.is_file() and target.stat().st_size > 0:

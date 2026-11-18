@@ -14,19 +14,25 @@ dependencies = [
     "scikit-learn>=1.9.1",
     "scipy>=1.18.1",
     "torch>=2.15.0",
+    "transformers>=5.23.0",
+    "xgboost>=3.4.1",
 ]
 
 [project.scripts]
-project-argus = "project_argus:main"
+project-argus = "lib.datasets:main"
 
 [build-system]
 requires = ["uv_build>=0.12.1,<0.13.0"]
 build-backend = "uv_build"
 
+[tool.uv.build-backend]
+module-name = "lib"
+
 [dependency-groups]
 dev = [
     "ipykernel>=7.4.0",
     "moto>=5.2.5",
+    "nbclient>=0.11.0",
 ]
 
 [[tool.uv.index]]
