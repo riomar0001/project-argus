@@ -21,79 +21,79 @@
     "macro_f1": 81.58
   },
   "ours": {
-    "accuracy": 96.41392071407374,
-    "macro_f1": 81.74724905452739
+    "accuracy": 96.54251450316829,
+    "macro_f1": 82.44290843627087
   },
   "within_5_points": true,
-  "training_minutes": 8.021672886666662,
-  "inference_ms_per_request": 0.04435064384177017,
+  "training_minutes": 5.3374285916666695,
+  "inference_ms_per_request": 0.026722167590875225,
   "best_epoch": 5,
   "class_weight_power": 0.5,
   "training_history": [
     {
       "epoch": 1,
-      "train_loss": 0.24514781871412133,
+      "train_loss": 0.2432366380229882,
       "learning_rate": 0.001,
-      "validation_macro_f1": 79.62813269623976,
-      "test_accuracy": 95.03546511966205,
-      "test_macro_f1": 79.00787675055781
+      "validation_macro_f1": 79.4590457389412,
+      "test_accuracy": 94.94003805445162,
+      "test_macro_f1": 78.66726122143028
     },
     {
       "epoch": 2,
-      "train_loss": 0.1820431236989941,
+      "train_loss": 0.1823284131808867,
       "learning_rate": 0.001,
-      "validation_macro_f1": 79.84473337467215,
-      "test_accuracy": 95.08376052461611,
-      "test_macro_f1": 79.42747292830124
+      "validation_macro_f1": 79.87729106440834,
+      "test_accuracy": 94.88243269191605,
+      "test_macro_f1": 79.15517224892685
     },
     {
       "epoch": 3,
-      "train_loss": 0.17503631553918209,
+      "train_loss": 0.17467932174360648,
       "learning_rate": 0.001,
-      "validation_macro_f1": 80.46862358770221,
-      "test_accuracy": 96.45523365084168,
-      "test_macro_f1": 80.33136200735726
+      "validation_macro_f1": 80.74232705927126,
+      "test_accuracy": 96.57393561000588,
+      "test_macro_f1": 80.73078094827291
     },
     {
       "epoch": 4,
-      "train_loss": 0.17192445691084635,
+      "train_loss": 0.17199920414398662,
       "learning_rate": 0.001,
-      "validation_macro_f1": 80.7357943870518,
-      "test_accuracy": 95.70403644848393,
-      "test_macro_f1": 80.35013831063794
+      "validation_macro_f1": 81.37983967334321,
+      "test_accuracy": 96.24692334995548,
+      "test_macro_f1": 81.31174557910805
     },
     {
       "epoch": 5,
-      "train_loss": 0.16980969101918053,
+      "train_loss": 0.17031545958639327,
       "learning_rate": 0.001,
-      "validation_macro_f1": 82.14443986063566,
-      "test_accuracy": 96.41392071407374,
-      "test_macro_f1": 81.74724905452739
+      "validation_macro_f1": 82.32962785259704,
+      "test_accuracy": 96.54251450316829,
+      "test_macro_f1": 82.44290843627087
     }
   ],
   "per_class_report": {
     "Code Injection": {
-      "precision": 0.9976311336717428,
-      "recall": 0.932616260677001,
-      "f1-score": 0.9640287769784173,
+      "precision": 0.9882747068676717,
+      "recall": 0.9332489718443531,
+      "f1-score": 0.9599739668076798,
       "support": 3161.0
     },
     "Dictionary-based Password Attack": {
-      "precision": 0.6470588235294118,
-      "recall": 0.9649122807017544,
-      "f1-score": 0.7746478873239436,
+      "precision": 0.6420118343195266,
+      "recall": 0.9517543859649122,
+      "f1-score": 0.7667844522968198,
       "support": 228.0
     },
     "Fake the Source of Data": {
-      "precision": 0.986768398686498,
-      "recall": 0.9124765562204162,
-      "f1-score": 0.9481694584938054,
+      "precision": 0.987807238242694,
+      "recall": 0.9116727694918282,
+      "f1-score": 0.9482142027773908,
       "support": 11197.0
     },
     "HTTP Response Splitting": {
-      "precision": 0.9994722955145119,
-      "recall": 0.9628876461616676,
-      "f1-score": 0.9808389435525634,
+      "precision": 0.9989448694275916,
+      "recall": 0.9626334519572953,
+      "f1-score": 0.9804530744336569,
       "support": 3934.0
     },
     "HTTP Verb Tampering": {
@@ -103,63 +103,63 @@
       "support": 811.0
     },
     "Input Data Manipulation": {
-      "precision": 0.06499608457321848,
-      "recall": 0.2996389891696751,
-      "f1-score": 0.10682110682110682,
+      "precision": 0.07473684210526316,
+      "recall": 0.5126353790613718,
+      "f1-score": 0.13045475424896646,
       "support": 277.0
     },
     "Normal": {
-      "precision": 0.9813936481404095,
-      "recall": 0.9853568993549063,
-      "f1-score": 0.9833712805213158,
+      "precision": 0.980990136096891,
+      "recall": 0.9889442492264121,
+      "f1-score": 0.9849511342801774,
       "support": 95335.0
     },
     "OS Command Injection": {
-      "precision": 0.3188028627195836,
-      "recall": 0.7967479674796748,
-      "f1-score": 0.45539033457249073,
+      "precision": 0.35277440259214254,
+      "recall": 0.708130081300813,
+      "f1-score": 0.4709380913760476,
       "support": 1230.0
     },
     "Path Traversal": {
-      "precision": 0.9985029940119761,
+      "precision": 0.9988020365378856,
       "recall": 0.9389076576576577,
-      "f1-score": 0.9677887405687754,
+      "f1-score": 0.9679291829923088,
       "support": 3552.0
     },
     "Protocol Manipulation": {
-      "precision": 0.6280667320902846,
-      "recall": 0.6990715456034954,
-      "f1-score": 0.6616696820883949,
+      "precision": 0.7521058965102286,
+      "recall": 0.6826870562534134,
+      "f1-score": 0.71571714858288,
       "support": 1831.0
     },
     "SQL Injection": {
-      "precision": 0.9987834805042264,
-      "recall": 0.9558209554395825,
-      "f1-score": 0.9768300563094249,
+      "precision": 0.9989294710327455,
+      "recall": 0.9552187876354877,
+      "f1-score": 0.9765852657500513,
       "support": 49820.0
     },
     "Scanning for Vulnerable Software": {
-      "precision": 0.9979253112033195,
+      "precision": 1.0,
       "recall": 0.9958592132505176,
-      "f1-score": 0.9968911917098445,
+      "f1-score": 0.9979253112033195,
       "support": 483.0
     },
     "accuracy": {
-      "precision": 0.9641392071407374,
-      "recall": 0.9641392071407374,
-      "f1-score": 0.9641392071407374,
-      "support": 0.9641392071407374
+      "precision": 0.965425145031683,
+      "recall": 0.965425145031683,
+      "f1-score": 0.965425145031683,
+      "support": 0.965425145031683
     },
     "macro avg": {
-      "precision": 0.8010010501736339,
-      "recall": 0.8698442286335757,
-      "f1-score": 0.8174724905452738,
+      "precision": 0.8139990225975886,
+      "recall": 0.8779605646275518,
+      "f1-score": 0.8244290843627087,
       "support": 171859.0
     },
     "weighted avg": {
-      "precision": 0.9775233023139193,
-      "recall": 0.9641392071407374,
-      "f1-score": 0.969634334738155,
+      "precision": 0.9788109753991382,
+      "recall": 0.965425145031683,
+      "f1-score": 0.971079835238494,
       "support": 171859.0
     }
   }
