@@ -1,0 +1,186 @@
+{
+  "purpose": "Check whether the DS-Augmented gaps to Table VI are seed noise. Class-weight power 0.15, data split seed 42 fixed; training seeds 42, 1, 2, 3, 4 vary weight init and shuffling.",
+  "class_weight_power": 0.15,
+  "paper": {
+    "DS_Augmented_v1.csv": {
+      "accuracy": 87.03,
+      "macro_f1": 51.49
+    },
+    "DS_Augmented_v2.csv": {
+      "accuracy": 97.42,
+      "macro_f1": 57.61
+    }
+  },
+  "recipes": {
+    "notebook": {
+      "description": "Notebook recipe: validation split, gradient clip 1.0, LR halved on plateau, keep the epoch with the best validation accuracy",
+      "datasets": {
+        "DS_Augmented_v1.csv": {
+          "per_seed": [
+            {
+              "seed": 42,
+              "epoch": 4,
+              "accuracy": 87.36,
+              "macro_f1": 52.88
+            },
+            {
+              "seed": 1,
+              "epoch": 5,
+              "accuracy": 87.33,
+              "macro_f1": 54.22
+            },
+            {
+              "seed": 2,
+              "epoch": 5,
+              "accuracy": 87.37,
+              "macro_f1": 54.2
+            },
+            {
+              "seed": 3,
+              "epoch": 5,
+              "accuracy": 87.3,
+              "macro_f1": 53.37
+            },
+            {
+              "seed": 4,
+              "epoch": 5,
+              "accuracy": 87.34,
+              "macro_f1": 53.97
+            }
+          ],
+          "accuracy_mean": 87.34,
+          "accuracy_std": 0.03,
+          "macro_f1_mean": 53.73,
+          "macro_f1_std": 0.59,
+          "accuracy_gap_points": 0.31,
+          "macro_f1_gap_points": 2.24
+        },
+        "DS_Augmented_v2.csv": {
+          "per_seed": [
+            {
+              "seed": 42,
+              "epoch": 4,
+              "accuracy": 97.58,
+              "macro_f1": 63.18
+            },
+            {
+              "seed": 1,
+              "epoch": 3,
+              "accuracy": 97.6,
+              "macro_f1": 59.09
+            },
+            {
+              "seed": 2,
+              "epoch": 4,
+              "accuracy": 97.56,
+              "macro_f1": 61.55
+            },
+            {
+              "seed": 3,
+              "epoch": 5,
+              "accuracy": 97.59,
+              "macro_f1": 60.7
+            },
+            {
+              "seed": 4,
+              "epoch": 4,
+              "accuracy": 97.61,
+              "macro_f1": 62.23
+            }
+          ],
+          "accuracy_mean": 97.59,
+          "accuracy_std": 0.02,
+          "macro_f1_mean": 61.35,
+          "macro_f1_std": 1.56,
+          "accuracy_gap_points": 0.17,
+          "macro_f1_gap_points": 3.74
+        }
+      }
+    },
+    "paper_only": {
+      "description": "Paper-only recipe: train on the full 80%, no clipping, no LR schedule, keep epoch 5",
+      "datasets": {
+        "DS_Augmented_v1.csv": {
+          "per_seed": [
+            {
+              "seed": 42,
+              "epoch": 5,
+              "accuracy": 87.17,
+              "macro_f1": 54.11
+            },
+            {
+              "seed": 1,
+              "epoch": 5,
+              "accuracy": 87.24,
+              "macro_f1": 54.41
+            },
+            {
+              "seed": 2,
+              "epoch": 5,
+              "accuracy": 87.13,
+              "macro_f1": 53.62
+            },
+            {
+              "seed": 3,
+              "epoch": 5,
+              "accuracy": 86.39,
+              "macro_f1": 53.62
+            },
+            {
+              "seed": 4,
+              "epoch": 5,
+              "accuracy": 87.12,
+              "macro_f1": 53.23
+            }
+          ],
+          "accuracy_mean": 87.01,
+          "accuracy_std": 0.35,
+          "macro_f1_mean": 53.8,
+          "macro_f1_std": 0.46,
+          "accuracy_gap_points": -0.02,
+          "macro_f1_gap_points": 2.31
+        },
+        "DS_Augmented_v2.csv": {
+          "per_seed": [
+            {
+              "seed": 42,
+              "epoch": 5,
+              "accuracy": 97.47,
+              "macro_f1": 62.17
+            },
+            {
+              "seed": 1,
+              "epoch": 5,
+              "accuracy": 97.39,
+              "macro_f1": 62.1
+            },
+            {
+              "seed": 2,
+              "epoch": 5,
+              "accuracy": 97.45,
+              "macro_f1": 63.62
+            },
+            {
+              "seed": 3,
+              "epoch": 5,
+              "accuracy": 97.5,
+              "macro_f1": 60.87
+            },
+            {
+              "seed": 4,
+              "epoch": 5,
+              "accuracy": 97.49,
+              "macro_f1": 61.1
+            }
+          ],
+          "accuracy_mean": 97.46,
+          "accuracy_std": 0.04,
+          "macro_f1_mean": 61.97,
+          "macro_f1_std": 1.09,
+          "accuracy_gap_points": 0.04,
+          "macro_f1_gap_points": 4.36
+        }
+      }
+    }
+  }
+}
