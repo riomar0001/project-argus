@@ -1,0 +1,145 @@
+{
+  "dataset": "DS_Augmented_v1.csv",
+  "model": "CNN-BiLSTM",
+  "device": "cuda",
+  "classes": [
+    "000 - Normal",
+    "126 - Path Traversal",
+    "1336 - SSTI",
+    "248 - Command Injection",
+    "66 - SQL Injection",
+    "79 - Cross-Site Scripting",
+    "88 - OS Command Injection",
+    "918 - SSRF",
+    "94 - Code Injection"
+  ],
+  "paper": {
+    "accuracy": 87.03,
+    "macro_f1": 51.49
+  },
+  "ours": {
+    "accuracy": 83.75977321567373,
+    "macro_f1": 56.271856944316504
+  },
+  "within_5_points": true,
+  "training_minutes": 6.014067863333427,
+  "inference_ms_per_request": 0.013409670339708208,
+  "best_epoch": 5,
+  "class_weight_power": 0.5,
+  "training_history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6569206872180565,
+      "learning_rate": 0.001,
+      "validation_macro_f1": 55.638408398962234,
+      "test_accuracy": 82.77810799689085,
+      "test_macro_f1": 55.78270810439725
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.6034673644131513,
+      "learning_rate": 0.0005,
+      "validation_macro_f1": 54.24590093118582,
+      "test_accuracy": 84.47487540578848,
+      "test_macro_f1": 54.94328976221038
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.5858085537445136,
+      "learning_rate": 0.0005,
+      "validation_macro_f1": 55.80565125627168,
+      "test_accuracy": 83.93580540441681,
+      "test_macro_f1": 56.5039531447145
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.5804796483200235,
+      "learning_rate": 0.00025,
+      "validation_macro_f1": 55.3780433077801,
+      "test_accuracy": 85.10630515294226,
+      "test_macro_f1": 55.90632992785326
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.5738515170969479,
+      "learning_rate": 0.00025,
+      "validation_macro_f1": 56.12805911345694,
+      "test_accuracy": 83.75977321567373,
+      "test_macro_f1": 56.271856944316504
+    }
+  ],
+  "per_class_report": {
+    "000 - Normal": {
+      "precision": 0.9901129943502824,
+      "recall": 0.994296019371245,
+      "f1-score": 0.9922000980674643,
+      "support": 98703.0
+    },
+    "126 - Path Traversal": {
+      "precision": 0.9478759447485015,
+      "recall": 0.7131372549019608,
+      "f1-score": 0.81391965984111,
+      "support": 5100.0
+    },
+    "1336 - SSTI": {
+      "precision": 0.25244100895036614,
+      "recall": 0.29540585574863126,
+      "f1-score": 0.2722386750027421,
+      "support": 4201.0
+    },
+    "248 - Command Injection": {
+      "precision": 0.18646598578510423,
+      "recall": 0.6408045977011494,
+      "f1-score": 0.2888734674994217,
+      "support": 4872.0
+    },
+    "66 - SQL Injection": {
+      "precision": 0.9688591218730322,
+      "recall": 0.8025764640796649,
+      "f1-score": 0.8779134103326648,
+      "support": 63265.0
+    },
+    "79 - Cross-Site Scripting": {
+      "precision": 0.29326287978863935,
+      "recall": 0.12722063037249284,
+      "f1-score": 0.1774580335731415,
+      "support": 3490.0
+    },
+    "88 - OS Command Injection": {
+      "precision": 0.864669163545568,
+      "recall": 0.6442550974847447,
+      "f1-score": 0.7383637875525042,
+      "support": 26876.0
+    },
+    "918 - SSRF": {
+      "precision": 0.49962714392244595,
+      "recall": 0.7125592187953205,
+      "f1-score": 0.5873914083047741,
+      "support": 10343.0
+    },
+    "94 - Code Injection": {
+      "precision": 0.2125254771169168,
+      "recall": 0.6166666666666667,
+      "f1-score": 0.3161085848146617,
+      "support": 1860.0
+    },
+    "accuracy": {
+      "precision": 0.8375977321567373,
+      "recall": 0.8375977321567373,
+      "f1-score": 0.8375977321567373,
+      "support": 0.8375977321567373
+    },
+    "macro avg": {
+      "precision": 0.5795377466756508,
+      "recall": 0.6163246450135418,
+      "f1-score": 0.562718569443165,
+      "support": 218710.0
+    },
+    "weighted avg": {
+      "precision": 0.8945654352025812,
+      "recall": 0.8375977321567373,
+      "f1-score": 0.8564003459012631,
+      "support": 218710.0
+    }
+  }
+}
