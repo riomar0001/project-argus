@@ -15,3 +15,6 @@ datasets/
 .env
 # Notebook run log
 results/progress.log
+
+# Personal Claude Code settings
+.claude/settings.local.json
