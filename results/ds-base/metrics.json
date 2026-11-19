@@ -21,67 +21,79 @@
     "macro_f1": 81.58
   },
   "ours": {
-    "accuracy": 93.09957581505769,
-    "macro_f1": 77.1347532129688
+    "accuracy": 96.41392071407374,
+    "macro_f1": 81.74724905452739
   },
   "within_5_points": true,
-  "training_minutes": 8.63112221166667,
-  "inference_ms_per_request": 0.04449949493480262,
+  "training_minutes": 8.021672886666662,
+  "inference_ms_per_request": 0.04435064384177017,
+  "best_epoch": 5,
+  "class_weight_power": 0.5,
   "training_history": [
     {
       "epoch": 1,
-      "train_loss": 0.36230575570046314,
-      "test_accuracy": 91.77814371083272,
-      "test_macro_f1": 75.22203585618566
+      "train_loss": 0.24514781871412133,
+      "learning_rate": 0.001,
+      "validation_macro_f1": 79.62813269623976,
+      "test_accuracy": 95.03546511966205,
+      "test_macro_f1": 79.00787675055781
     },
     {
       "epoch": 2,
-      "train_loss": 0.26994259808898485,
-      "test_accuracy": 91.54015792015548,
-      "test_macro_f1": 76.36117269939798
+      "train_loss": 0.1820431236989941,
+      "learning_rate": 0.001,
+      "validation_macro_f1": 79.84473337467215,
+      "test_accuracy": 95.08376052461611,
+      "test_macro_f1": 79.42747292830124
     },
     {
       "epoch": 3,
-      "train_loss": 0.25577925996526485,
-      "test_accuracy": 92.98843819642848,
-      "test_macro_f1": 76.13098396586359
+      "train_loss": 0.17503631553918209,
+      "learning_rate": 0.001,
+      "validation_macro_f1": 80.46862358770221,
+      "test_accuracy": 96.45523365084168,
+      "test_macro_f1": 80.33136200735726
     },
     {
       "epoch": 4,
-      "train_loss": 0.24990461197140895,
-      "test_accuracy": 92.29019137781553,
-      "test_macro_f1": 75.24030879187715
+      "train_loss": 0.17192445691084635,
+      "learning_rate": 0.001,
+      "validation_macro_f1": 80.7357943870518,
+      "test_accuracy": 95.70403644848393,
+      "test_macro_f1": 80.35013831063794
     },
     {
       "epoch": 5,
-      "train_loss": 0.24488995626105473,
-      "test_accuracy": 93.09957581505769,
-      "test_macro_f1": 77.1347532129688
+      "train_loss": 0.16980969101918053,
+      "learning_rate": 0.001,
+      "validation_macro_f1": 82.14443986063566,
+      "test_accuracy": 96.41392071407374,
+      "test_macro_f1": 81.74724905452739
     }
   ],
   "per_class_report": {
     "Code Injection": {
-      "precision": 0.992595085829687,
-      "recall": 0.932932616260677,
-      "f1-score": 0.961839530332681,
+      "precision": 0.9976311336717428,
+      "recall": 0.932616260677001,
+      "f1-score": 0.9640287769784173,
       "support": 3161.0
     },
     "Dictionary-based Password Attack": {
-      "precision": 0.5777202072538861,
-      "recall": 0.9780701754385965,
-      "f1-score": 0.7263843648208469,
+      "precision": 0.6470588235294118,
+      "recall": 0.9649122807017544,
+      "f1-score": 0.7746478873239436,
       "support": 228.0
     },
     "Fake the Source of Data": {
-      "precision": 0.9828714395688991,
-      "recall": 0.9122086273108868,
-      "f1-score": 0.9462226133679188,
+      "precision": 0.986768398686498,
+      "recall": 0.9124765562204162,
+      "f1-score": 0.9481694584938054,
       "support": 11197.0
     },
     "HTTP Response Splitting": {
-      "precision": 0.9997360084477297,
-      "recall": 0.9626334519572953,
-      "f1-score": 0.9808339808339809,
+      "precision": 0.9994722955145119,
+      "recall": 0.9628876461616676,
+      "f1-score": 0.9808389435525634,
       "support": 3934.0
     },
     "HTTP Verb Tampering": {
@@ -91,63 +103,63 @@
       "support": 811.0
     },
     "Input Data Manipulation": {
-      "precision": 0.060085836909871244,
-      "recall": 0.10108303249097472,
-      "f1-score": 0.07537012113055182,
+      "precision": 0.06499608457321848,
+      "recall": 0.2996389891696751,
+      "f1-score": 0.10682110682110682,
       "support": 277.0
     },
     "Normal": {
-      "precision": 0.9977073331290363,
-      "recall": 0.9220642995751822,
-      "f1-score": 0.9583955691717273,
+      "precision": 0.9813936481404095,
+      "recall": 0.9853568993549063,
+      "f1-score": 0.9833712805213158,
       "support": 95335.0
     },
     "OS Command Injection": {
-      "precision": 0.2317249948229447,
-      "recall": 0.9097560975609756,
-      "f1-score": 0.36936788248885954,
+      "precision": 0.3188028627195836,
+      "recall": 0.7967479674796748,
+      "f1-score": 0.45539033457249073,
       "support": 1230.0
     },
     "Path Traversal": {
-      "precision": 0.9982035928143712,
-      "recall": 0.9386261261261262,
-      "f1-score": 0.967498549042368,
+      "precision": 0.9985029940119761,
+      "recall": 0.9389076576576577,
+      "f1-score": 0.9677887405687754,
       "support": 3552.0
     },
     "Protocol Manipulation": {
-      "precision": 0.18967490842490842,
-      "recall": 0.9049699617695248,
-      "f1-score": 0.3136178669442604,
+      "precision": 0.6280667320902846,
+      "recall": 0.6990715456034954,
+      "f1-score": 0.6616696820883949,
       "support": 1831.0
     },
     "SQL Injection": {
-      "precision": 0.9991164776910617,
-      "recall": 0.9533319951826575,
-      "f1-score": 0.9756874184701665,
+      "precision": 0.9987834805042264,
+      "recall": 0.9558209554395825,
+      "f1-score": 0.9768300563094249,
       "support": 49820.0
     },
     "Scanning for Vulnerable Software": {
-      "precision": 0.9757575757575757,
-      "recall": 1.0,
-      "f1-score": 0.9877300613496932,
+      "precision": 0.9979253112033195,
+      "recall": 0.9958592132505176,
+      "f1-score": 0.9968911917098445,
       "support": 483.0
     },
     "accuracy": {
-      "precision": 0.9309957581505769,
-      "recall": 0.9309957581505769,
-      "f1-score": 0.9309957581505769,
-      "support": 0.9309957581505769
+      "precision": 0.9641392071407374,
+      "recall": 0.9641392071407374,
+      "f1-score": 0.9641392071407374,
+      "support": 0.9641392071407374
     },
     "macro avg": {
-      "precision": 0.7498170248406998,
-      "recall": 0.8757925962966215,
-      "f1-score": 0.771347532129688,
+      "precision": 0.8010010501736339,
+      "recall": 0.8698442286335757,
+      "f1-score": 0.8174724905452738,
       "support": 171859.0
     },
     "weighted avg": {
-      "precision": 0.980866730865335,
-      "recall": 0.9309957581505769,
-      "f1-score": 0.9508108439838386,
+      "precision": 0.9775233023139193,
+      "recall": 0.9641392071407374,
+      "f1-score": 0.969634334738155,
       "support": 171859.0
     }
   }
